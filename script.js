@@ -170,7 +170,6 @@ const IC = {
     search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
     orders: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l2 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7l2-4Z"/><path d="M4 7h16M9 11h6"/></svg>'
 };
-const CAT_ICON = { 'الكل': 3, 'حلويات': 4, 'مطاعم': 3, 'برغر': 0, 'مناسف': 3, 'شاورما': 1, 'قهوة': 2, 'معجنات': 5 };
 
 let me = null, cart = { storeId: '', items: [], details: '', notes: '' };
 let screenStack = ['screen-home'], currentScreen = 'screen-home';
