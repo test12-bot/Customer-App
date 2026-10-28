@@ -310,6 +310,10 @@ function vcCard(s) {
         '<div class="vc-body"><div class="vc-name"><b>' + H(s.name) + '</b></div><span class="vc-cat">' + H(s.cat) + '</span>' +
         '<div class="vc-meta">' + IC.route + '<span class="hl">' + (f == null ? 'حدّد موقعك' : 'التوصيل ' + money(f) + ' د.أ') + '</span>' + (k == null ? '' : '<i class="dot"></i><span>' + k.toFixed(1) + ' كم</span>') + '<i class="dot"></i><span>كاش</span></div></div></button>';
 }
+function countAr(n, one, two, few, many) {          // صيغة العدد الصحيحة بالعربية
+    if (n === 0) return 'لا يوجد ' + one; if (n === 1) return one + ' واحد'; if (n === 2) return two;
+    return n + ' ' + (n % 100 >= 3 && n % 100 <= 10 ? few : many);
+}
 function storeMatches(s) { return (catFilter === 'الكل' || s.cat === catFilter) && (!openOnly || isOpen(s)); }
 function sortStores(list, by) {
     const key = { near: s => estKm(s) == null ? 99 : estKm(s), eta: s => estEta(s), fee: s => estFee(s) == null ? 99 : estFee(s) }[by] || (s => 0);
@@ -328,7 +332,7 @@ function renderStores() {
     $('sortChips').innerHTML = [['near', 'الأقرب'], ['eta', 'الأسرع'], ['fee', 'الأقل توصيلًا']].map(x => '<button type="button" class="srt' + (sortBy === x[0] ? ' on' : '') + '" data-sort="' + x[0] + '">' + x[1] + '</button>').join('') +
         '<button type="button" class="srt' + (openOnly ? ' on' : '') + '" data-open="1">مفتوح الآن</button>';
     $('storesTitle').textContent = catFilter === 'الكل' ? 'كل المتاجر' : catFilter;
-    $('storesCount').textContent = list.length + ' متجر';
+    $('storesCount').textContent = countAr(list.length, 'متجر', 'متجران', 'متاجر', 'متجرًا');
     $('storeList').innerHTML = list.length ? sortStores(list, sortBy).map(vcCard).join('') : '<div class="empty-orders rich"><div class="em-art">' + IC.search + '</div>لا توجد متاجر مطابقة</div>';
 }
 function renderSearch() {
@@ -581,7 +585,8 @@ function liveOpen(e) { if (e.target.closest('.lv-x')) return; openTrack($('liveB
 function fillProfile() {
     $('pfName').textContent = me.name; $('pfPhone').textContent = me.phone; $('pfInitial').textContent = me.name.trim().charAt(0) || '؟';
     $('pfArea').textContent = me.loc ? me.loc.label : 'غير محدد';
-    $('homeTitle').textContent = 'ماذا تشتهي اليوم يا ' + me.name.split(' ')[0] + '؟';
+    $('homeHello').textContent = 'أهلًا ' + me.name.split(' ')[0];
+    $('homeTitle').textContent = 'ماذا تشتهي اليوم؟';
     $('locLabel').textContent = me.loc ? 'التوصيل إلى ' + me.loc.label : 'حدّد موقع التوصيل';
     $('locPill').classList.toggle('need', !me.loc);
 }

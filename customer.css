@@ -131,3 +131,10 @@
 .co-re{border:0;background:var(--yellow);color:var(--teal-900);font:inherit;font-weight:800;font-size:12px;border-radius:12px;padding:7px 12px;cursor:pointer}
 .tk-eta{display:flex;align-items:baseline;gap:6px;margin:2px 0}
 .tk-eta b{font-size:32px;font-family:var(--font-display);line-height:1;color:var(--teal-900)}.tk-eta span{font-weight:800;color:var(--ink-soft)}
+
+/* أزرار الترتيب: حد فيروزي خفيف ليظهر الأبيض على الكريمي */
+.srt{background:#fff;border:1.5px solid rgba(37,206,209,.45);color:var(--teal-900)}
+.srt.on{border-color:var(--teal)}
+.ctab{background:#fff;border:1.5px solid rgba(37,206,209,.35)}
+.ctab.on{border-color:var(--teal)}
+.sec-h small{color:var(--ink-soft);font-weight:700;font-size:12.5px}
