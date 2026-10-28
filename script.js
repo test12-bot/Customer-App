@@ -581,8 +581,8 @@ function liveOpen(e) { if (e.target.closest('.lv-x')) return; openTrack($('liveB
 function fillProfile() {
     $('pfName').textContent = me.name; $('pfPhone').textContent = me.phone; $('pfInitial').textContent = me.name.trim().charAt(0) || '؟';
     $('pfArea').textContent = me.loc ? me.loc.label : 'غير محدد';
-    $('homeTitle').textContent = 'أهلًا ' + me.name.split(' ')[0] + '، ماذا تشتهي اليوم؟';
-    $('locLabel').textContent = me.loc ? me.loc.label : 'حدّد موقعك';
+    $('homeTitle').textContent = 'ماذا تشتهي اليوم يا ' + me.name.split(' ')[0] + '؟';
+    $('locLabel').textContent = me.loc ? 'التوصيل إلى ' + me.loc.label : 'حدّد موقع التوصيل';
     $('locPill').classList.toggle('need', !me.loc);
 }
 function renderAll() { if (!me) return; fillProfile(); renderStores(); renderOrders(); updateCartUI(); if (curStore && currentScreen === 'screen-store') renderStore(); if (currentScreen === 'screen-cart') renderCart(); }
