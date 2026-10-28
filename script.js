@@ -1,16 +1,15 @@
-/* ---------- أيقونات الشاشة الافتتاحية (طعام) ---------- */
-const FOOD_ICONS = [
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11c0-3.5 3.6-6 8-6s8 2.5 8 6H4Z"/><path d="M3 14.5h18"/><path d="M5 17.5h14v.5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-.5Z"/></svg>',
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8 3 4.5 4.5 2.5 7L12 21 21.5 7C19.5 4.5 16 3 12 3Z"/><circle cx="10" cy="9" r="1.2"/><circle cx="14" cy="11" r="1.2"/><circle cx="12" cy="15" r="1"/></svg>',
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h12v6a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V8Z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v2M11 3v2M14 3v2"/></svg>',
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a2 2 0 0 0 2 2v9"/><path d="M10 3v7a2 2 0 0 1-2 2"/><path d="M17 3c-2 1.5-3 4-3 7h3v11"/></svg>',
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11a5 5 0 0 1 10 0"/><path d="M6.5 11h11L12 21 6.5 11Z"/></svg>',
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>'
-];
+/* =========================================================
+   HIGHWAY Customer App — script.js
+   ملف مُجمَّع من جزأين: (1) الشاشة الافتتاحية وتسجيل الدخول المشتركة
+   (2) منطق تطبيق العملاء: المتاجر، القائمة، السلة، الطلب، التتبع، العروض.
+   يعتمد على: hw-config.js, hw-orders.js, hw-map.js, hw-food.js, hw-promo.js, hw-demo.js
+   ========================================================= */
+/* ---------- الشاشة الافتتاحية: رسومات الطعام العائمة ---------- */
+
 
 function buildSplashIcons() {
     const wrap = document.getElementById('splashIcons');
-    const SPL = window.HWFood ? HWFood.splashSet() : FOOD_ICONS;
+    const SPL = HWFood.splashSet();   // رسومات الطعام المشتركة (hw-food.js)
     for (let i = 0; i < 18; i++) {
         const el = document.createElement('div');
         el.className = 'float-icon';
@@ -153,7 +152,7 @@ const PROFILE_KEY = 'hwc-user', CART_KEY = 'hwc-cart';
 const $ = (id) => document.getElementById(id);
 const H = HWOrders.esc, money = HWOrders.money;
 const ROOTS = ['screen-home', 'screen-search', 'screen-orders', 'screen-profile'];
-const TAB_OF = { 'screen-search': 'search', 'screen-home': 'home', 'screen-store': 'home', 'screen-cart': 'home', 'screen-orders': 'orders', 'screen-track': 'orders', 'screen-profile': 'profile' };
+const TAB_OF = { 'screen-offers': 'home', 'screen-search': 'search', 'screen-home': 'home', 'screen-store': 'home', 'screen-cart': 'home', 'screen-orders': 'orders', 'screen-track': 'orders', 'screen-profile': 'profile' };
 const IC = {
     pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
     clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
@@ -175,7 +174,6 @@ let me = null, cart = { storeId: '', items: [], details: '', notes: '' };
 let screenStack = ['screen-home'], currentScreen = 'screen-home';
 let menus = {}, storeState = {}, allOrders = [], prevSig = null, trackId = null, curStore = '', catFilter = 'الكل', itemCtx = null;
 let sortBy = 'near', openOnly = false;
-const TITLES = { 'screen-cart': 'سلتك', 'screen-orders': 'طلباتي', 'screen-track': 'تتبع الطلب', 'screen-profile': 'حسابي', 'screen-search': 'البحث' };
 let cartRoute = null, cartMini = null, trk = null, locMap = null, locCb = null, locTimer = null, locPick = null;
 const dismissed = {};
 
@@ -187,7 +185,8 @@ function logoImg(id, cls) { return '<img class="' + (cls || 'lg') + '" src="avat
 function readJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
 function saveMe() { try { localStorage.setItem(PROFILE_KEY, JSON.stringify(me)); } catch (e) {} }
 function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {} }
-function foodIcon(i) { return FOOD_ICONS[Math.abs(i) % FOOD_ICONS.length]; }
+const PATTERN_ICONS = ['burger', 'pizza', 'coffee', 'cutlery', 'icecream', 'bag'].map(HWFood.svg);   // نقشة الخلفية (نفس رسومات شاشة الدخول)
+function foodIcon(i) { return PATTERN_ICONS[Math.abs(i) % PATTERN_ICONS.length]; }
 function hashStr(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
 function pattern(seed, dark) {
     const pos = [[6, 12, 34], [30, 62, 26], [56, 8, 30], [78, 58, 36], [92, 14, 24], [44, 70, 22], [66, 32, 20]];
@@ -220,9 +219,6 @@ function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     $(id).classList.add('active'); currentScreen = id;
     $('headerBack').classList.toggle('show', ROOTS.indexOf(id) < 0);
-    document.body.classList.toggle('on-store', id === 'screen-store');
-    document.body.classList.toggle('sub-page', id !== 'screen-home' && id !== 'screen-store');
-    $('pageTitle').textContent = TITLES[id] || '';
     if (id === 'screen-search') { renderSearch(); setTimeout(() => { try { $('storeSearch').focus({ preventScroll: true }); } catch (e) {} }, 120); }
     syncTabs(id); updateCartUI(); renderLive();
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -299,19 +295,46 @@ function confirmLoc() {
 }
 
 /* ---------- المتاجر ---------- */
-function coverClass(s) { return 'c' + (Math.abs(hashStr(s.id)) % 3); }
+function coverArt(s) {                                 // صورة الغلاف إن وُجدت، وإلا رسمة القسم
+    const c = HWPromo.cover(s.id);
+    return c ? '<img class="vc-photo" src="' + c + '" alt="">' : pattern(Math.abs(hashStr(s.id)) % 7, false) + '<span class="vc-ill">' + HWFood.forCat(s.cat) + '</span>';
+}
+function offerTag(s) { const o = HWPromo.forStore(s.id)[0]; return o ? '<span class="vc-offer">' + H(o.percent ? 'خصم ' + o.percent + '٪' : 'عرض') + '</span>' : ''; }
 function vcCard(s) {
     const open = isOpen(s), f = estFee(s), k = estKm(s), e = estEta(s), hasMenu = itemCount(s.id) > 0;
-    return '<button type="button" class="vc" data-s="' + H(s.id) + '"><div class="vc-img ' + coverClass(s) + '">' + pattern(Math.abs(hashStr(s.id)) % 7, false) +
-        '<span class="vc-ill">' + HWFood.forCat(s.cat) + '</span>' + logoImg(s.id, 'vc-logo') +
+    return '<button type="button" class="vc" data-s="' + H(s.id) + '"><div class="vc-img">' + coverArt(s) + offerTag(s) + logoImg(s.id, 'vc-logo') +
         '<span class="vc-time">' + e + '–' + (e + 8) + '<small>دقيقة</small></span>' +
         (open ? '' : '<span class="vc-closed">' + (hasMenu ? 'مغلق حاليًا' : 'قريبًا') + '</span>') + '</div>' +
         '<div class="vc-body"><div class="vc-name"><b>' + H(s.name) + '</b></div><span class="vc-cat">' + H(s.cat) + '</span>' +
-        '<div class="vc-meta">' + IC.route + '<span class="hl">' + (f == null ? 'حدّد موقعك' : 'التوصيل ' + money(f) + ' د.أ') + '</span>' + (k == null ? '' : '<i class="dot"></i><span>' + k.toFixed(1) + ' كم</span>') + '<i class="dot"></i><span>كاش</span></div></div></button>';
+        '<div class="vc-meta">' + IC.route + '<span class="hl">' + (f == null ? 'حدّد موقعك' : 'التوصيل ' + money(f) + ' د.أ') + '</span>' + (k == null ? '' : '<i class="dot"></i><span>' + k.toFixed(1) + ' كم</span>') + '<i class="dot"></i><span>نقدًا</span></div></div></button>';
 }
 function countAr(n, one, two, few, many) {          // صيغة العدد الصحيحة بالعربية
     if (n === 0) return 'لا يوجد ' + one; if (n === 1) return one + ' واحد'; if (n === 2) return two;
     return n + ' ' + (n % 100 >= 3 && n % 100 <= 10 ? few : many);
+}
+function liveOffers() { const now = Date.now(); return HWPromo.offers.list().filter(o => HWPromo.live(o, now) && STORES.some(s => s.id === o.storeId)); }
+function renderOffers() {                              // البطاقات أعلى الرئيسية: الأولى للعروض، والباقي كما هي
+    const n = liveOffers().length;
+    const lo = liveOffers(), max = lo.reduce((m, o) => Math.max(m, o.percent || 0), 0), ids = lo.map(o => o.storeId).filter((v, i, a) => a.indexOf(v) === i).slice(0, 3);
+    return '<div class="bn ofr" data-bn="offers">' + pattern(2, true) +
+        '<div class="ofr-txt"><span class="ofr-tag">عروض اليوم</span>' +
+        (max ? '<b>خصومات تصل إلى <em>' + max + '٪</em></b><small>' + countAr(n, 'عرض', 'عرضان', 'عروض', 'عرضًا') + ' من متاجرنا · لفترة محدودة</small>' : '<b>عروض حصرية <em>قريبًا</em></b><small>تابع أحدث عروض متاجرنا</small>') +
+        '<span class="ofr-cta">تصفح العروض <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></div>' +
+        '<div class="ofr-side"><svg class="ofr-burst" viewBox="0 0 100 100"><polygon points="50.0,0.0 58.0,9.8 69.1,3.8 72.8,15.9 85.4,14.6 84.1,27.2 96.2,30.9 90.2,42.0 100.0,50.0 90.2,58.0 96.2,69.1 84.1,72.8 85.4,85.4 72.8,84.1 69.1,96.2 58.0,90.2 50.0,100.0 42.0,90.2 30.9,96.2 27.2,84.1 14.6,85.4 15.9,72.8 3.8,69.1 9.8,58.0 0.0,50.0 9.8,42.0 3.8,30.9 15.9,27.2 14.6,14.6 27.2,15.9 30.9,3.8 42.0,9.8"/></svg><span class="ofr-pct">%</span>' +
+        (ids.length ? '<span class="ofr-logos">' + ids.map(id => logoImg(id, '')).join('') + '</span>' : '') + '</div><i class="ofr-shine"></i></div>' +
+        '<div class="bn t" data-bn="stores"><b>اطلب من متاجرك المفضلة</b><small>يوصلك كابتن HIGHWAY بسرعة</small><span class="bn-ill">' + HWFood.svg('cloche') + '</span></div>' +
+        '<div class="bn y" data-bn="stores"><b>الدفع نقدًا عند الاستلام</b><small>قيمة الطلب ورسوم التوصيل للكابتن</small><span class="bn-ill">' + IC.cash + '</span></div>' +
+        '<div class="bn d" data-bn="orders"><b>تابع طلبك لحظة بلحظة</b><small>حالة طلبك ووقت وصوله المتوقع</small><span class="bn-ill">' + IC.nav + '</span></div>';
+}
+function openOffers() { renderOffersPage(); goTo('screen-offers'); }
+function renderOffersPage() {
+    const list = liveOffers().sort((a, b) => (b.percent || 0) - (a.percent || 0));
+    $('offersList').innerHTML = list.length ? list.map(o => {
+        const st = storeInfo(o.storeId);
+        return '<button type="button" class="ofc" data-s="' + H(o.storeId) + '"><div class="ofc-art">' + (o.percent ? '<b>' + o.percent + '٪</b><small>خصم</small>' : '<b>%</b>') + '</div>' +
+            '<div class="ofc-t"><span class="ofc-st">' + logoImg(o.storeId, '') + H(st ? st.name : '') + '</span><b>' + H(o.title) + '</b><small>' + (o.minOrder ? 'للطلبات فوق ' + money(o.minOrder) + ' د.أ' : H(o.sub || 'يُطبَّق تلقائيًا في السلة')) + (o.endsAt ? ' · حتى ' + new Date(o.endsAt).toLocaleDateString('ar-JO') : '') + (o.demo ? ' · عرض تجريبي' : '') + '</small></div>' +
+            '<span class="ofc-go">اطلب</span></button>';
+    }).join('') : '<div class="empty-orders rich"><div class="em-art">' + IC.cart + '</div>لا توجد عروض حاليًا، تابعنا قريبًا</div>';
 }
 function storeMatches(s) { return (catFilter === 'الكل' || s.cat === catFilter) && (!openOnly || isOpen(s)); }
 function sortStores(list, by) {
@@ -321,10 +344,7 @@ function sortStores(list, by) {
 function renderStores() {
     const cats = ['الكل'].concat(STORES.map(s => s.cat).filter((c, i, a) => a.indexOf(c) === i));
     $('catChips').innerHTML = cats.map(c => '<button type="button" class="cat2' + (c === catFilter ? ' on' : '') + '" data-c="' + H(c) + '"><i>' + HWFood.forCat(c) + '</i><span>' + H(c) + '</span></button>').join('');
-    $('banners').innerHTML =
-        '<div class="bn t" data-bn="stores"><b>اطلب من متاجرك المفضلة</b><small>يوصلك كابتن HIGHWAY بسرعة</small><span class="bn-ill">' + HWFood.svg('cloche') + '</span></div>' +
-        '<div class="bn y" data-bn="stores"><b>ادفع كاش عند الاستلام</b><small>قيمة الطلب وأجرة التوصيل للكابتن</small><span class="bn-ill">' + IC.cash + '</span></div>' +
-        '<div class="bn d" data-bn="orders"><b>تابع طلبك لحظة بلحظة</b><small>شاهد الكابتن على الخريطة حتى باب بيتك</small><span class="bn-ill">' + IC.nav + '</span></div>';
+    $('banners').innerHTML = renderOffers();
     $('logoRow').innerHTML = sortStores(STORES, 'near').map(s => '<button type="button" class="lg-it' + (isOpen(s) ? '' : ' off') + '" data-s="' + H(s.id) + '">' + logoImg(s.id, '') + '<span>' + H(s.name) + '</span></button>').join('');
     const list = STORES.filter(storeMatches);
     $('fastRow').innerHTML = sortStores(list.filter(isOpen), 'eta').slice(0, 6).map(vcCard).join('') || '<div class="empty-orders" style="flex:1">لا توجد متاجر مفتوحة الآن</div>';
@@ -354,20 +374,20 @@ function itemRow(s, c, it, open) {
 }
 function renderStore() {
     const s = storeInfo(curStore); if (!s) return;
-    const open = isOpen(s), f = estFee(s), k = estKm(s), e = estEta(s), m = menuOf(s.id), n = cartCount();
+    const open = isOpen(s), f = estFee(s), k = estKm(s), e = estEta(s), m = menuOf(s.id);
     const cats = m.cats.filter(c => c.items.some(i => i.on !== false));
     const feat = []; cats.forEach(c => c.items.filter(i => i.on !== false).forEach(it => { if (feat.length < 6) feat.push({ c, it }); }));
     $('storeHero').innerHTML =
-        '<div class="v-hero ' + coverClass(s) + '">' + pattern(Math.abs(hashStr(s.id)) % 7, false) + '<span class="vc-ill">' + HWFood.forCat(s.cat) + '</span>' +
-        '<button type="button" class="v-btn back" onclick="goBack()" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>' +
-        (n ? '<button type="button" class="v-btn cart" onclick="openCart()" aria-label="السلة">' + IC.cart + '<em>' + n + '</em></button>' : '') + '</div>' +
-        '<div class="v-head">' + logoImg(s.id, 'v-logo') + '<h1>' + H(s.name) + '</h1><div class="v-sub">' + H(s.cat) + ' · الدفع كاش عند الاستلام</div>' +
+        '<div class="v-hero">' + coverArt(s) +
+        '</div>' +
+        '<div class="v-head">' + logoImg(s.id, 'v-logo') + '<h1>' + H(s.name) + '</h1><div class="v-sub">' + H(s.cat) + ' · الدفع نقدًا عند الاستلام</div>' +
         '<div class="v-info"><div><small>التوصيل</small><b>' + (f == null ? '—' : money(f) + ' د.أ') + '</b></div><div><small>الوقت</small><b>' + e + '–' + (e + 8) + ' د</b></div><div><small>المسافة</small><b>' + (k == null ? '—' : k.toFixed(1) + ' كم') + '</b></div></div>' +
-        (f == null ? '<button type="button" class="v-note demo" style="width:100%;border:0;font:inherit;text-align:start;cursor:pointer" onclick="openLoc()">حدّد موقعك لمعرفة أجرة التوصيل ←</button>' : '') +
-        (open ? '' : '<div class="v-note closed">المتجر مغلق حاليًا، يمكنك تصفح المنيو فقط</div>') + (m.demo ? '<div class="v-note demo">منيو تجريبي بأسعار وهمية</div>' : '') + '</div>';
+        HWPromo.forStore(s.id).map(o => '<div class="v-offer"><span>%</span><div><b>' + H(o.title) + '</b><small>' + (o.percent ? 'يُطبَّق تلقائيًا في السلة' + (o.minOrder ? ' للطلبات فوق ' + money(o.minOrder) + ' د.أ' : '') : H(o.sub || '')) + '</small></div></div>').join('') +
+        (f == null ? '<button type="button" class="v-note demo" style="width:100%;border:0;font:inherit;text-align:start;cursor:pointer" onclick="openLoc()">حدّد موقعك لمعرفة رسوم التوصيل ←</button>' : '') +
+        (open ? '' : '<div class="v-note closed">المتجر مغلق حاليًا، يمكنك تصفح القائمة فقط</div>') + (m.demo ? '<div class="v-note demo">قائمة تجريبية بأسعار وهمية</div>' : '') + '</div>';
     $('catTabs').innerHTML = (feat.length > 2 ? '<button type="button" class="ctab on" data-i="f">مختارات</button>' : '') + cats.map((c, i) => '<button type="button" class="ctab' + (feat.length <= 2 && i === 0 ? ' on' : '') + '" data-i="' + i + '">' + H(c.name) + '</button>').join('');
     $('menuList').innerHTML = (feat.length > 2 ? '<section class="mn-sec" id="sec-f"><h3 class="mn-h">مختارات من ' + H(s.name) + '</h3><div class="w-feat">' + feat.map(x => '<button type="button" class="fi mi-f" data-c="' + H(x.c.id) + '" data-i="' + H(x.it.id) + '"><div class="mi-art">' + HWFood.forItem(x.it.name, x.it.desc, x.c.name, s.cat) + '</div><b>' + H(x.it.name) + '</b><span>' + money(x.it.price) + ' د.أ</span></button>').join('') + '</div></section>' : '') +
-        (cats.map((c, ci) => '<section class="mn-sec" id="sec-' + ci + '"><h3 class="mn-h">' + H(c.name) + '</h3>' + c.items.filter(i => i.on !== false).map(it => itemRow(s, c, it, open)).join('') + '</section>').join('') || '<div class="empty-orders rich"><div class="em-art">' + IC.orders + '</div>المنيو غير متاح بعد</div>');
+        (cats.map((c, ci) => '<section class="mn-sec" id="sec-' + ci + '"><h3 class="mn-h">' + H(c.name) + '</h3>' + c.items.filter(i => i.on !== false).map(it => itemRow(s, c, it, open)).join('') + '</section>').join('') || '<div class="empty-orders rich"><div class="em-art">' + IC.orders + '</div>القائمة غير متاحة بعد</div>');
 }
 function findItem(sid, cid, iid) { const c = menuOf(sid).cats.filter(x => x.id === cid)[0]; return c ? c.items.filter(i => i.id === iid)[0] : null; }
 
@@ -390,7 +410,7 @@ function updateCartUI() {
 function openCart() {
     renderCart(); goTo('screen-cart');
     const s = storeInfo(cart.storeId);
-    if (s && myLoc()) ensureRoute(s).then(() => { if (currentScreen === 'screen-cart') renderCart(); if (currentScreen === 'screen-search') renderSearch(); });
+    if (s && myLoc()) ensureRoute(s).then(() => { if (currentScreen === 'screen-cart') renderCart(); if (currentScreen === 'screen-search') renderSearch(); if (currentScreen === 'screen-offers') renderOffersPage(); });
 }
 function ensureRoute(s) {
     const a = storeLoc(s), b = myLoc(), key = a.join(',') + '|' + b.join(',');
@@ -406,7 +426,8 @@ function renderCart() {
         return;
     }
     $('cartStoreName').textContent = s.name;
-    const l = myLoc(), ready = cartRoute && l && cartRoute.key === storeLoc(s).join(',') + '|' + l.join(','), fee = ready ? HWMap.fee(cartRoute.km) : null, items = cartTotal();
+    const l = myLoc(), ready = cartRoute && l && cartRoute.key === storeLoc(s).join(',') + '|' + l.join(','), fee = ready ? HWMap.fee(cartRoute.km) : null, gross = cartTotal(), dsc = HWPromo.discount(s.id, gross), items = Math.round((gross - dsc.amount) * 100) / 100;
+    const nextOf = HWPromo.forStore(s.id).filter(o => o.percent && gross < (o.minOrder || 0))[0];
     const eta = ready ? prepMin(s) + cartRoute.min : estEta(s);
     $('cartBody').innerHTML =
         '<div class="cart-card">' + cart.items.map((x, i) => '<div class="cl"><div class="cl-txt"><b>' + H(x.name) + '</b>' + (x.notes ? '<small>' + H(x.notes) + '</small>' : '') + '<span>' + money(x.price * x.qty) + ' د.أ</span></div>' +
@@ -417,8 +438,9 @@ function renderCart() {
         '<div class="dl-info"><span class="ap-ico lp-ico" style="width:40px;height:40px;border-radius:14px;background:var(--teal-800);color:var(--yellow);display:grid;place-items:center">' + IC.pin + '</span><div class="t"><small>' + (l ? 'موقعك على الخريطة' : 'لم تحدد موقعك بعد') + '</small><b>' + (l ? H(me.loc.label) : 'حدّد موقعك لحساب التوصيل') + '</b></div><button type="button" class="more-link inl" onclick="openLoc()">' + (l ? 'تغيير' : 'تحديد') + '</button></div>' +
         '<div class="field" id="addrField" style="margin:14px 0 0"><label for="cDetails">تفاصيل العنوان</label><textarea id="cDetails" rows="2" placeholder="رقم المبنى، الطابق، أقرب معلم..." oninput="cart.details=this.value;saveCart()">' + H(cart.details) + '</textarea><div class="err-msg">الرجاء كتابة تفاصيل العنوان</div></div></div>' +
         '<h3 class="sec-t">ملاحظات</h3><div class="cart-card"><textarea id="cNotes" rows="2" class="plain" placeholder="ملاحظات للكابتن أو المتجر (اختياري)" oninput="cart.notes=this.value;saveCart()">' + H(cart.notes) + '</textarea></div>' +
-        '<h3 class="sec-t">الدفع</h3><div class="cart-card pay"><span class="pay-ico">' + IC.cash + '</span><div><b>كاش عند الاستلام</b><small>تدفع قيمة المنتجات وأجرة التوصيل للكابتن</small></div></div>' +
-        '<div class="cart-card sum"><div><span>المنتجات</span><b>' + money(items) + ' د.أ</b></div><div><span>أجرة التوصيل' + (ready ? ' · ' + cartRoute.km.toFixed(1) + ' كم' : '') + '</span><b>' + (fee == null ? (l ? 'جاري الحساب…' : '—') : money(fee) + ' د.أ') + '</b></div><div><span>وقت الوصول المتوقع</span><b>' + eta + '–' + (eta + 8) + ' دقيقة</b></div><div class="tot"><span>الإجمالي</span><b>' + (fee == null ? '—' : money(items + fee) + ' د.أ') + '</b></div></div>' +
+        '<h3 class="sec-t">الدفع</h3><div class="cart-card pay"><span class="pay-ico">' + IC.cash + '</span><div><b>الدفع نقدًا عند الاستلام</b><small>تدفع قيمة الطلب ورسوم التوصيل للكابتن</small></div></div>' +
+        (nextOf && !dsc.offer ? '<div class="v-note demo">أضف ' + money(nextOf.minOrder - gross) + ' د.أ لتحصل على ' + H(nextOf.title) + '</div>' : '') +
+        '<div class="cart-card sum"><div><span>المجموع الفرعي</span><b>' + money(gross) + ' د.أ</b></div>' + (dsc.offer ? '<div class="dsc"><span>' + H(dsc.offer.title) + '</span><b>−' + money(dsc.amount) + ' د.أ</b></div>' : '') + '<div><span>رسوم التوصيل' + (ready ? ' · ' + cartRoute.km.toFixed(1) + ' كم' : '') + '</span><b>' + (fee == null ? (l ? 'جاري الحساب…' : '—') : money(fee) + ' د.أ') + '</b></div><div><span>وقت الوصول المتوقع</span><b>' + eta + '–' + (eta + 8) + ' دقيقة</b></div><div class="tot"><span>الإجمالي</span><b>' + (fee == null ? '—' : money(items + fee) + ' د.أ') + '</b></div></div>' +
         (isOpen(s) ? '' : '<div class="st-closed">المتجر مغلق حاليًا</div>') +
         '<button type="button" class="submit-btn" id="placeBtn" onclick="placeOrder()"' + (isOpen(s) ? '' : ' disabled') + '><span class="spinner"><i></i><i></i></span><span class="btn-label">' + (l ? (fee == null ? 'جاري حساب الأجرة…' : 'تأكيد الطلب · ' + money(items + fee) + ' د.أ') : 'حدّد موقعك للمتابعة') + '</span></button>';
     if (l) {
@@ -435,14 +457,14 @@ async function placeOrder() {
     if (cart.details.length < 3) { $('addrField').classList.add('invalid'); $('cDetails').focus(); return; }
     const btn = $('placeBtn'); btn.classList.add('loading');
     const r = await ensureRoute(s); btn.classList.remove('loading');
-    const fee = HWMap.fee(r.km), items = cartTotal(), sl = storeLoc(s), l = myLoc();
+    const fee = HWMap.fee(r.km), gross = cartTotal(), dsc = HWPromo.discount(s.id, gross), items = Math.round((gross - dsc.amount) * 100) / 100, sl = storeLoc(s), l = myLoc();
     const o = HWOrders.create({
         source: 'market', kind: 'market', storeId: s.id, storeName: s.name, storeStart: s.start,
         customer: { name: me.name, phone: me.phone },
         address: { lat: l[0], lng: l[1], label: me.loc.label, area: me.loc.label, details: cart.details },
         storeLoc: { lat: sl[0], lng: sl[1] }, route: r.pts, distKm: Math.round(r.km * 10) / 10, routeMin: r.min,
         items: cart.items.map(x => ({ id: x.id, name: x.name, price: x.price, qty: x.qty, notes: x.notes })),
-        itemsTotal: Math.round(items * 100) / 100, fee: fee, total: Math.round((items + fee) * 100) / 100, payment: 'cash',
+        itemsGross: Math.round(gross * 100) / 100, discount: dsc.amount, offerTitle: dsc.offer ? dsc.offer.title : '', itemsTotal: items, fee: fee, total: Math.round((items + fee) * 100) / 100, payment: 'cash',
         notes: ($('cNotes').value || '').trim(), storeState: 'pending',
         from: s.name, to: me.loc.label, price: money(fee), orderValue: money(items)
     });
@@ -479,13 +501,6 @@ function stIcon(o) {
 }
 function destOf(o) { return [o.address.lat, o.address.lng]; }
 function srcOf(o) { return o.storeLoc ? [o.storeLoc.lat, o.storeLoc.lng] : (CFG.center || [32.0392, 35.7272]); }
-function capPos(o) {
-    if (o.status === 'delivered' || o.status === 'cancelled' || !o.captain) return null;
-    if (o.captain.lat) return [o.captain.lat, o.captain.lng];
-    if (o.status === 'accepted') return srcOf(o);
-    const pk = o.history.filter(x => x.s === 'picked')[0], t0 = pk ? pk.t : Date.now(), dur = Math.max(60000, (o.routeMin || 10) * 60000);
-    return HWMap.along(o.route || [srcOf(o), destOf(o)], Math.min(.94, Math.max(.05, (Date.now() - t0) / dur)));
-}
 function openTrack(id) {
     trackId = id; goTo('screen-track'); buildTrack(); renderTrack();
     setTimeout(() => { if (trk) { trk.map.invalidateSize(); fitTrack(); } }, 80);
@@ -499,16 +514,13 @@ function buildTrack() {
     HWMap.line(map, o.route || [a, b]);
     L.marker(a, { icon: HWMap.ICON.store(o.storeId), interactive: false }).addTo(map);
     L.marker(b, { icon: HWMap.ICON.home(), interactive: false }).addTo(map);
-    trk = { id: o.id, map, cap: null, pts: (o.route || [a, b]).concat([a, b]) };
+    trk = { id: o.id, map, pts: (o.route || [a, b]).concat([a, b]) };
     fitTrack();
 }
 function fitTrack() { if (trk) HWMap.fit(trk.map, trk.pts, [50, 50]); }
 function renderTrack() {
     const o = HWOrders.get(trackId); if (!o || !trk || trk.id !== o.id) { buildTrack(); if (!trk) return; }
     const s = storeInfo(o.storeId), ic = stIcon(o), n = HWOrders.stage(o), active = HWOrders.isActive(o);
-    const p = capPos(o);
-    if (p) { if (!trk.cap) trk.cap = L.marker(p, { icon: HWMap.ICON.cap(), interactive: false, zIndexOffset: 500 }).addTo(trk.map); else trk.cap.setLatLng(p); }
-    else if (trk.cap) { trk.map.removeLayer(trk.cap); trk.cap = null; }
     const labels = ['تأكيد', 'تحضير', 'كابتن', 'توصيل', 'تسليم'], canCancel = o.status === 'new' && o.storeState === 'pending';
     const cap = o.captain ? '<div class="cart-card"><div class="cap-row"><span class="av">' + H(o.captain.name.trim().charAt(0)) + '</span><div class="t"><b>' + H(o.captain.name) + '</b><small>' + (o.status === 'picked' ? 'استلم طلبك وفي الطريق إليك' : 'في الطريق للمتجر') + '</small></div>' + (o.captain.phone ? '<a href="tel:' + H(o.captain.phone) + '" aria-label="اتصال بالكابتن">' + IC.phone + '</a>' : '') + '</div></div>' : '';
     $('tkSheet').innerHTML =
@@ -516,7 +528,7 @@ function renderTrack() {
         (o.status === 'cancelled' ? '' : '<div class="tk-steps">' + labels.map((l, i) => '<i class="' + (i < n ? 'done' : i === n ? 'act' : '') + '"></i>').join('') + '</div><div class="tk-lbls">' + labels.map(l => '<span>' + l + '</span>').join('') + '</div>') +
         cap +
         '<h3 class="sec-t">طلبك</h3><div class="cart-card">' + o.items.map(l => '<div class="cl ro"><div class="cl-txt"><b>' + l.qty + '× ' + H(l.name) + '</b>' + (l.notes ? '<small>' + H(l.notes) + '</small>' : '') + '</div><span>' + money(l.price * l.qty) + '</span></div>').join('') + '</div>' +
-        '<div class="cart-card sum"><div><span>المنتجات</span><b>' + money(o.itemsTotal) + ' د.أ</b></div><div><span>أجرة التوصيل' + (o.distKm ? ' · ' + o.distKm + ' كم' : '') + '</span><b>' + money(o.fee) + ' د.أ</b></div><div class="tot"><span>الإجمالي كاش عند الاستلام</span><b>' + money(o.total) + ' د.أ</b></div></div>' +
+        '<div class="cart-card sum"><div><span>المجموع الفرعي</span><b>' + money(o.itemsGross || o.itemsTotal) + ' د.أ</b></div>' + (o.discount ? '<div class="dsc"><span>' + H(o.offerTitle || 'خصم') + '</span><b>−' + money(o.discount) + ' د.أ</b></div>' : '') + '<div><span>رسوم التوصيل' + (o.distKm ? ' · ' + o.distKm + ' كم' : '') + '</span><b>' + money(o.fee) + ' د.أ</b></div><div class="tot"><span>الإجمالي (نقدًا عند الاستلام)</span><b>' + money(o.total) + ' د.أ</b></div></div>' +
         '<h3 class="sec-t">التوصيل إلى</h3><div class="cart-card"><b>' + H(o.address.label || o.address.area) + '</b><p class="mut">' + H(o.address.details) + '</p></div>' +
         '<h3 class="sec-t">سجل الطلب</h3><div class="cart-card">' + HWOrders.timeline(o) + '</div>' +
         (canCancel ? '<button type="button" class="ghost-btn dng wide" onclick="cancelMine(\'' + o.id + '\')">إلغاء الطلب</button>' : '') +
@@ -599,7 +611,8 @@ document.addEventListener('click', (e) => {
     if ((el = t.closest('.vc, .lg-it, .sr[data-s]'))) { buzz(); openStore(el.dataset.s); return; }
     if ((el = t.closest('.sr[data-si]'))) { buzz(); openStore(el.dataset.si); setTimeout(() => openItem(el.dataset.c, el.dataset.i), 200); return; }
     if ((el = t.closest('.srt'))) { if (el.dataset.open) openOnly = !openOnly; else sortBy = el.dataset.sort; buzz(); renderStores(); return; }
-    if ((el = t.closest('.bn'))) { buzz(); if (el.dataset.bn === 'orders') tabGo('screen-orders'); else $('allStores').scrollIntoView({ behavior: 'smooth' }); return; }
+    if ((el = t.closest('.ofc'))) { buzz(); openStore(el.dataset.s); return; }
+    if ((el = t.closest('.bn'))) { buzz(); if (el.dataset.bn === 'offers') openOffers(); else if (el.dataset.bn === 'orders') tabGo('screen-orders'); else $('allStores').scrollIntoView({ behavior: 'smooth' }); return; }
     if ((el = t.closest('.co-re'))) { e.stopPropagation(); reorder(el.dataset.re); return; }
     if ((el = t.closest('.mi-f'))) { openItem(el.dataset.c, el.dataset.i); return; }
     if ((el = t.closest('#catTabs .ctab'))) { document.querySelectorAll('#catTabs .ctab').forEach(c => c.classList.toggle('on', c === el)); const sec = $('sec-' + el.dataset.i); if (sec) window.scrollTo({ top: sec.getBoundingClientRect().top + window.scrollY - 56, behavior: 'smooth' }); return; }
@@ -643,6 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
     introCtl = skip ? null : initIntroVideo();
     $('loginForm').addEventListener('submit', submitLogin);
     $('enterBtn').addEventListener('click', () => { if (me) finishLogin(); else openLogin(); });
+    HWPromo.offers.subscribe(() => { if (me) renderAll(); });
     HWDB.col('menus').subscribe(l => { menus = {}; l.forEach(m => { menus[m.id] = m; }); if (me) renderAll(); });
     HWDB.col('storestate').subscribe(l => { storeState = {}; l.forEach(m => { storeState[m.id] = m; }); if (me) renderAll(); });
     HWOrders.subscribe(onOrders);

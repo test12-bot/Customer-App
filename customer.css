@@ -75,7 +75,6 @@
 .vc-meta .hl{background:rgba(37,206,209,.15);color:var(--teal-800);border-radius:999px;padding:2px 9px}
 
 /* صفحة المتجر */
-.v-btn{display:none !important}
 .v-hero{position:relative;height:150px;border-radius:28px;overflow:hidden;display:grid;place-items:center;background:var(--food-bg)}
 .v-hero .pt{color:rgba(255,255,255,.2)}
 .v-hero .vc-ill{width:96px}
@@ -138,3 +137,41 @@
 .ctab{background:#fff;border:1.5px solid rgba(37,206,209,.35)}
 .ctab.on{border-color:var(--teal)}
 .sec-h small{color:var(--ink-soft);font-weight:700;font-size:12.5px}
+
+/* ===== صور الأغلفة والعروض ===== */
+.vc-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.v-hero .vc-photo{position:absolute;inset:0}
+.vc-offer{position:absolute;top:12px;inset-inline-start:12px;z-index:2;background:var(--yellow);color:var(--teal-900);font-weight:800;font-size:12px;border-radius:10px;padding:5px 10px}
+.v-offer{display:flex;align-items:center;gap:10px;background:var(--yellow);border-radius:14px;padding:10px 12px;margin:10px 0 0}
+.v-offer>span{width:34px;height:34px;border-radius:50%;background:var(--teal-900);color:var(--yellow);display:grid;place-items:center;font-weight:800;flex:none}
+.v-offer b{display:block;font-size:13.5px}.v-offer small{font-size:11.5px;font-weight:700;opacity:.8}
+.sum .dsc{color:var(--teal-900);font-weight:800}.sum .dsc b{color:var(--teal-900)}
+/* بطاقة العروض الأولى: صفراء لافتة، ختم خصم دوّار، شعارات المتاجر، ولمعة متحركة */
+.bn.ofr{background:var(--yellow) !important;color:var(--teal-900) !important;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;min-height:150px;padding:18px 16px 18px 12px;flex-basis:88%}
+.bn.ofr .pt{color:rgba(14,58,59,.09) !important}
+.ofr-txt{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.ofr-tag{background:var(--teal-900);color:var(--yellow);font-size:11.5px;font-weight:800;border-radius:999px;padding:4px 11px;letter-spacing:.2px}
+.bn.ofr .ofr-txt b{font-size:19px;line-height:1.3;max-width:none;color:var(--teal-900) !important}
+.bn.ofr .ofr-txt b em{font-style:normal;font-family:var(--font-display);font-size:26px;color:var(--teal-900);background:var(--white);border-radius:10px;padding:0 7px;margin-inline-start:2px;display:inline-block;transform:rotate(-3deg)}
+.bn.ofr .ofr-txt small{max-width:none;font-size:12px;font-weight:700;color:rgba(14,58,59,.75) !important}
+.ofr-cta{display:inline-flex;align-items:center;gap:4px;margin-top:4px;background:var(--teal-900);color:var(--cream);font-size:12.5px;font-weight:800;border-radius:12px;padding:7px 12px}
+.ofr-cta svg{width:14px;height:14px}
+.ofr-side{position:relative;z-index:1;width:104px;height:104px;flex:none;display:grid;place-items:center}
+.ofr-burst{position:absolute;inset:0;width:100%;height:100%;fill:var(--teal);animation:ofrSpin 18s linear infinite}
+.ofr-pct{position:relative;font-family:var(--font-display);font-weight:800;font-size:46px;color:var(--teal-900);line-height:1;transform:rotate(-8deg)}
+.ofr-pct small{font-size:18px}
+.ofr-logos{position:absolute;bottom:-8px;inset-inline-start:50%;transform:translateX(50%);display:flex}
+[dir=rtl] .ofr-logos{transform:translateX(50%)}
+.ofr-logos img{width:28px;height:28px;border-radius:50%;object-fit:cover;background:#fff;border:2px solid var(--yellow) !important;margin-inline-start:-8px}
+.ofr-shine{position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-18deg);animation:ofrShine 3.6s ease-in-out infinite;pointer-events:none}
+@keyframes ofrSpin{to{transform:rotate(360deg)}}
+@keyframes ofrShine{0%,55%{left:-60%}100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.ofr-burst,.ofr-shine{animation:none}}
+/* صفحة العروض */
+.ofc{display:flex;align-items:center;gap:12px;width:100%;border:0;background:var(--cream);border-radius:22px;padding:12px;margin:0 0 12px;font:inherit;color:var(--ink);text-align:start;cursor:pointer}
+.ofc-art{width:76px;height:76px;border-radius:18px;background:var(--yellow);color:var(--teal-900);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;line-height:1}
+.ofc-art b{font-size:24px;font-family:var(--font-display)}.ofc-art small{font-size:11px;font-weight:800;margin-top:4px}
+.ofc-t{flex:1;min-width:0}.ofc-t b{display:block;font-size:15px;margin:4px 0 2px}.ofc-t small{color:var(--ink-soft);font-size:12px;font-weight:600}
+.ofc-st{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--ink-soft)}
+.ofc-st img{width:24px;height:24px;border-radius:50%;object-fit:cover;border:2px solid var(--yellow)}
+.ofc-go{background:var(--teal);color:var(--teal-900);font-weight:800;font-size:12.5px;border-radius:12px;padding:8px 12px;flex:none}

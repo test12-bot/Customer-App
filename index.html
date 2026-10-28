@@ -16,11 +16,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800;900&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="leaflet.css?v=40">
-<link rel="stylesheet" href="styles.css?v=40">
-<link rel="stylesheet" href="map.css?v=40">
-<link rel="stylesheet" href="customer.css?v=40">
-<link rel="stylesheet" href="theme.css?v=45">
+<link rel="stylesheet" href="leaflet.css?v=60">
+<link rel="stylesheet" href="styles.css?v=60">
+<link rel="stylesheet" href="map.css?v=60">
+<link rel="stylesheet" href="customer.css?v=60">
+<link rel="stylesheet" href="theme.css?v=60">
 </head>
 <body>
 
@@ -91,7 +91,6 @@
         <button class="w-addr" id="locPill" type="button" onclick="openLoc()"><span id="locLabel">حدّد موقعك</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
       </div>
     </div>
-    <span id="pageTitle" hidden></span>
     <button class="hdr-cart" id="hdrCart" type="button" aria-label="السلة" onclick="openCart()" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.6 8.2a2 2 0 0 1-2 1.6H9a2 2 0 0 1-2-1.6L5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
       <em id="hdrCartN">0</em>
@@ -119,6 +118,10 @@
       <div id="storeList"></div>
     </div></section>
     <section class="screen" id="screen-store"><div class="container"><div id="storeHero"></div><div class="cat-tabs" id="catTabs"></div><div id="menuList"></div></div></section>
+    <section class="screen" id="screen-offers"><div class="container">
+      <div class="page-heading"><h1>العروض</h1><p>أحدث عروض متاجرنا، والخصم يُطبَّق تلقائيًا في السلة</p></div>
+      <div id="offersList"></div>
+    </div></section>
     <section class="screen" id="screen-search"><div class="container">
       <div class="w-sbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="storeSearch" placeholder="ابحث عن متجر أو صنف..." autocomplete="off" oninput="renderSearch()"></div>
       <div id="searchBody"></div>
@@ -172,13 +175,14 @@
   <div class="loc-panel"><div class="loc-lbl"><small>الموقع المحدد</small><b id="locAddr">...</b></div><button type="button" class="submit-btn" id="locOk" onclick="confirmLoc()"><span class="btn-label">تأكيد الموقع</span></button></div>
 </div>
 
-<script src="leaflet.js?v=40"></script>
-<script src="hw-config.js?v=40"></script>
-<script src="hw-map.js?v=40"></script>
-<script src="hw-food.js?v=40"></script>
-<script src="hw-orders.js?v=40"></script>
-<script src="hw-demo.js?v=40"></script>
-<script src="script.js?v=40"></script>
-<script src="hw-ui.js?v=44"></script>
+<script src="leaflet.js?v=60"></script>
+<script src="hw-config.js?v=60"></script>
+<script src="hw-map.js?v=60"></script>
+<script src="hw-food.js?v=60"></script>
+<script src="hw-orders.js?v=60"></script>
+<script src="hw-promo.js?v=60"></script>
+<script src="hw-demo.js?v=60"></script>
+<script src="script.js?v=60"></script>
+<script src="hw-ui.js?v=60"></script>
 </body>
 </html>
