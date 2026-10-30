@@ -148,7 +148,8 @@ function finishLogin() {
 /* =========================================================
    1) الإعدادات والحالة العامة
    ========================================================= */
-const CFG = window.HW_CONFIG, STORES = CFG.stores;
+const CFG = window.HW_CONFIG;
+let STORES = HWBiz.storeList();           // المتاجر تديرها الإدارة (قاعدة البيانات)، وقبلها القائمة في hw-config.js
 const PROFILE_KEY = 'hwc-user', CART_KEY = 'hwc-cart', ANN_KEY = 'hwc-ann-seen';
 const SUPPORT_WA = '962791819432';
 const $ = (id) => document.getElementById(id);
@@ -197,7 +198,7 @@ function blankCart(keep) { return { storeId: '', items: [], notes: '', promo: ''
 function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms || 8); } catch (e) {} }
 function sortKey(name) { return String(name).replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').trim(); }
 function storeInfo(id) { return STORES.filter(s => s.id === id)[0]; }
-function logoImg(id, cls) { return '<img class="' + (cls || 'lg') + '" src="avatars/' + H(id) + '.jpg" alt="" onerror="this.src=\'logo-icon.png\'">'; }
+function logoImg(id, cls) { return '<img class="' + (cls || 'lg') + '" src="' + H(HWBiz.logo(id)) + '" alt="" onerror="this.src=\'logo-icon.png\'">'; }
 function readJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
 function saveMe() { try { localStorage.setItem(PROFILE_KEY, JSON.stringify(me)); } catch (e) {} }
 function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {} }
@@ -550,6 +551,7 @@ async function placeOrder() {
     cart = blankCart(); saveCart(); updateCartUI();
     screenStack = ['screen-home', 'screen-orders']; openTrack(o.id);
     HWOrders.toast(o.scheduledFor ? 'تمت جدولة طلبك ' + fmtWhen(o.scheduledFor) : 'تم إرسال طلبك للمتجر'); buzz(20);
+    if (HWPush.state() === 'off') HWPush.enable();         // أول طلب: نطلب الإذن ليعرف العميل حالة طلبه والتطبيق مغلق
 }
 
 /* =========================================================
@@ -954,7 +956,10 @@ document.addEventListener('DOMContentLoaded', () => {
     HWDB.col('menus').subscribe(l => { menus = {}; l.forEach(m => { menus[m.id] = m; }); rerender(); });
     HWDB.col('storestate').subscribe(l => { storeState = {}; l.forEach(m => { storeState[m.id] = m; }); rerender(); });
     HWOrders.subscribe(onOrders);
+    HWBiz.storesCol.subscribe(() => { STORES = HWBiz.storeList(); rerender(); });
+    HWBiz.onMedia(rerender);                                 // شعار أو غلاف جديد من الإدارة
     renderAll(); showScreen('screen-home'); if (me) deepLink();
+    HWPush.init('customer', () => me && me.phone, { open: (id) => { if (me && HWOrders.get(id)) { screenStack = ['screen-home', 'screen-orders']; openTrack(id); } } });
     setInterval(() => { if (!document.hidden && me) { renderOrders(); renderLive(); if (currentScreen === 'screen-track') renderTrack(); } }, 15000);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && splash.classList.contains('login-mode') && !splash.classList.contains('hide')) closeLogin(); });
 });
