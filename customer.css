@@ -276,3 +276,9 @@ button.dl-info{width:100%;border:0;background:none;font:inherit;color:inherit;te
 .co-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
 .co-re.rt{background:var(--ink);color:var(--yellow)}
 .qty button svg{width:15px;height:15px}
+/* صور الأصناف */
+.mi-art,.is-art,.sr .ic{overflow:hidden}
+.it-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mi-art,.sr .ic{position:relative}
+.is-art{position:relative}
+.sr .ic .it-ph{border-radius:inherit}

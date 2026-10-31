@@ -239,6 +239,8 @@ function estFee(s) { const k = estKm(s); return k == null ? null : HWMap.fee(k);
 function estEta(s) { const k = estKm(s); return prepMin(s) + (k == null ? CFG.travelMin || 15 : Math.max(5, Math.round(k / 0.45))); }
 function rating(s) { return HWBiz.storeRating(s.id, allOrders); }
 function ratingH(s, cls) { const r = rating(s); return r.n ? '<span class="' + (cls || 'rt-chip') + '">★ ' + r.avg.toFixed(1) + ' <small>(' + r.n + ')</small></span>' : ''; }
+/* صورة الصنف (يرفعها المطعم أو الإدارة) وإلا رسمة تلقائية من اسمه */
+function itemArt(sid, it, catName, storeCat) { const ph = HWBiz.itemImg(sid, it); return ph ? '<img class="it-ph" src="' + H(ph) + '" alt="">' : HWFood.forItem(it.name, it.desc, catName, storeCat); }
 function coverArt(s) {                                  // صورة الغلاف إن وُجدت، وإلا رسمة القسم
     const c = HWBiz.cover(s.id, storeState[s.id]);
     return c ? '<img class="vc-photo" src="' + c + '" alt="">' : pattern(Math.abs(hashStr(s.id)) % 7, false) + '<span class="vc-ill">' + HWFood.forCat(s.cat) + '</span>';
@@ -326,7 +328,7 @@ function renderSearch() {
     const k = sortKey(q), st = STORES.filter(s => sortKey(s.name).includes(k) || sortKey(s.cat).includes(k));
     const its = []; STORES.forEach(s => menuOf(s.id).cats.forEach(c => c.items.forEach(it => { if (HWBiz.itemListed(it) && (sortKey(it.name).includes(k) || sortKey(it.desc || '').includes(k))) its.push({ s, c, it }); })));
     box.innerHTML = (st.length ? '<h3 class="sr-h">المتاجر</h3>' + st.map(s => '<button type="button" class="sr" data-s="' + H(s.id) + '">' + logoImg(s.id, '') + '<div class="t"><b>' + H(s.name) + '</b><small>' + H(s.cat) + ' · ' + (isOpen(s) ? 'مفتوح' : H(stStatus(s).label || 'مغلق')) + '</small></div></button>').join('') : '') +
-        (its.length ? '<h3 class="sr-h">الأصناف</h3>' + its.slice(0, 40).map(x => '<button type="button" class="sr" data-si="' + H(x.s.id) + '" data-c="' + H(x.c.id) + '" data-i="' + H(x.it.id) + '"><span class="ic">' + HWFood.forItem(x.it.name, x.it.desc, x.c.name, x.s.cat) + '</span><div class="t"><b>' + H(x.it.name) + '</b><small>' + H(x.s.name) + '</small></div><span class="p">' + money(x.it.price) + ' د.أ</span></button>').join('') : '') ||
+        (its.length ? '<h3 class="sr-h">الأصناف</h3>' + its.slice(0, 40).map(x => '<button type="button" class="sr" data-si="' + H(x.s.id) + '" data-c="' + H(x.c.id) + '" data-i="' + H(x.it.id) + '"><span class="ic">' + itemArt(x.s.id, x.it, x.c.name, x.s.cat) + '</span><div class="t"><b>' + H(x.it.name) + '</b><small>' + H(x.s.name) + '</small></div><span class="p">' + money(x.it.price) + ' د.أ</span></button>').join('') : '') ||
         '<div class="empty-orders rich"><div class="em-art">' + IC.search + '</div>لا توجد نتائج لـ "' + H(q) + '"</div>';
 }
 
@@ -339,7 +341,7 @@ function itemRow(s, c, it, open) {
     const avail = HWBiz.itemOn(it), n = inCartQty(s.id, it.id), hasOpts = (it.options || []).length > 0;
     return '<div class="mi' + (avail ? '' : ' out') + '" data-c="' + H(c.id) + '" data-i="' + H(it.id) + '"><div class="mi-txt"><div><b>' + H(it.name) + '</b>' + (it.desc ? '<p>' + H(it.desc) + '</p>' : '') + (hasOpts ? '<span class="mi-opt">قابل للتخصيص</span>' : '') + '</div>' +
         '<span class="mi-price">' + (avail ? money(it.price) + ' د.أ' : 'نفدت الكمية اليوم') + '</span></div>' +
-        '<div class="mi-art">' + HWFood.forItem(it.name, it.desc, c.name, s.cat) + (open && avail ? '<button type="button" class="mi-add' + (n ? ' has' : '') + '" data-add="1" aria-label="إضافة">' + (n ? '×' + n : '+') + '</button>' : '') + '</div></div>';
+        '<div class="mi-art' + (HWBiz.itemImg(s.id, it) ? ' ph' : '') + '">' + itemArt(s.id, it, c.name, s.cat) + (open && avail ? '<button type="button" class="mi-add' + (n ? ' has' : '') + '" data-add="1" aria-label="إضافة">' + (n ? '×' + n : '+') + '</button>' : '') + '</div></div>';
 }
 function renderStore() {
     const s = storeInfo(curStore); if (!s) return;
@@ -358,7 +360,7 @@ function renderStore() {
         (m.demo ? '<div class="v-note demo">قائمة تجريبية بأسعار وهمية</div>' : '') + '</div>';
     $('catTabs').innerHTML = (feat.length > 2 ? '<button type="button" class="ctab on" data-i="f">مختارات</button>' : '') + cats.map((c, i) => '<button type="button" class="ctab' + (feat.length <= 2 && i === 0 ? ' on' : '') + '" data-i="' + i + '">' + H(c.name) + '</button>').join('');
     const canAdd = open || canSchedule(s);
-    $('menuList').innerHTML = (feat.length > 2 ? '<section class="mn-sec" id="sec-f"><h3 class="mn-h">مختارات من ' + H(s.name) + '</h3><div class="w-feat">' + feat.map(x => '<button type="button" class="fi mi-f" data-c="' + H(x.c.id) + '" data-i="' + H(x.it.id) + '"><div class="mi-art">' + HWFood.forItem(x.it.name, x.it.desc, x.c.name, s.cat) + '</div><b>' + H(x.it.name) + '</b><span>' + money(x.it.price) + ' د.أ</span></button>').join('') + '</div></section>' : '') +
+    $('menuList').innerHTML = (feat.length > 2 ? '<section class="mn-sec" id="sec-f"><h3 class="mn-h">مختارات من ' + H(s.name) + '</h3><div class="w-feat">' + feat.map(x => '<button type="button" class="fi mi-f" data-c="' + H(x.c.id) + '" data-i="' + H(x.it.id) + '"><div class="mi-art">' + itemArt(s.id, x.it, x.c.name, s.cat) + '</div><b>' + H(x.it.name) + '</b><span>' + money(x.it.price) + ' د.أ</span></button>').join('') + '</div></section>' : '') +
         (cats.map((c, ci) => '<section class="mn-sec" id="sec-' + ci + '"><h3 class="mn-h">' + H(c.name) + '</h3>' + c.items.filter(HWBiz.itemListed).map(it => itemRow(s, c, it, canAdd)).join('') + '</section>').join('') || '<div class="empty-orders rich"><div class="em-art">' + IC.orders + '</div>القائمة غير متاحة بعد</div>');
 }
 function shareStore(id) {
@@ -375,7 +377,7 @@ function openItem(cid, iid) {
     const c = menuOf(curStore).cats.filter(x => x.id === cid)[0] || {}, avail = HWBiz.itemOn(it), canAdd = (isOpen(s) || canSchedule(s)) && avail;
     $('itemSheetBody').innerHTML = '<button type="button" class="is-x" onclick="closeItemSheet()" aria-label="إغلاق">' + IC.x + '</button>' +
         '<button type="button" class="is-fav' + (isFav('i', s.id + ':' + it.id) ? ' on' : '') + '" data-fav-i="' + H(s.id + ':' + it.id) + '" aria-label="المفضلة">' + IC.heart + '</button>' +
-        '<div class="is-art">' + pattern(Math.abs(hashStr(it.id)) % 7, false) + HWFood.forItem(it.name, it.desc, c.name, s.cat) + '</div>' +
+        '<div class="is-art">' + (HWBiz.itemImg(s.id, it) ? itemArt(s.id, it, c.name, s.cat) : pattern(Math.abs(hashStr(it.id)) % 7, false) + HWFood.forItem(it.name, it.desc, c.name, s.cat)) + '</div>' +
         '<div class="is-pad"><h3 class="is-name">' + H(it.name) + '</h3>' + (it.desc ? '<p class="mut">' + H(it.desc) + '</p>' : '') + '<div class="is-price">' + money(it.price) + ' د.أ</div>' +
         (it.options || []).map(g => '<div class="og" data-g="' + H(g.id) + '"><div class="og-h"><b>' + H(g.name) + '</b><small>' + (g.min >= 1 ? 'مطلوب' : 'اختياري') + (g.max > 1 ? ' · حتى ' + g.max : '') + '</small></div>' +
             g.choices.map(ch => '<button type="button" class="oc-ch' + ((sel[g.id] || []).indexOf(ch.id) >= 0 ? ' on' : '') + (g.max === 1 ? ' rd' : '') + '" data-ch="' + H(ch.id) + '"><i></i><span>' + H(ch.name) + '</span><small>' + (ch.price ? '+' + money(ch.price) + ' د.أ' : '') + '</small></button>').join('') + '</div>').join('') +
@@ -804,7 +806,7 @@ function renderFavs() {
     const fs = ((me.favs && me.favs.s) || []).map(storeInfo).filter(Boolean);
     const fi = ((me.favs && me.favs.i) || []).map(k => { const p = k.split(':'), s = storeInfo(p[0]), f = s && findAny(p[0], p[1]); return f ? { s, f } : null; }).filter(Boolean);
     $('favsBody').innerHTML = (fs.length ? '<h3 class="sec-t">متاجر</h3>' + fs.map(vcCard).join('') : '') +
-        (fi.length ? '<h3 class="sec-t">أصناف</h3>' + fi.map(x => '<button type="button" class="sr" data-si="' + H(x.s.id) + '" data-c="' + H(x.f.c.id) + '" data-i="' + H(x.f.it.id) + '"><span class="ic">' + HWFood.forItem(x.f.it.name, x.f.it.desc, x.f.c.name, x.s.cat) + '</span><div class="t"><b>' + H(x.f.it.name) + '</b><small>' + H(x.s.name) + (HWBiz.itemOn(x.f.it) ? '' : ' · غير متوفر الآن') + '</small></div><span class="p">' + money(x.f.it.price) + ' د.أ</span></button>').join('') : '') ||
+        (fi.length ? '<h3 class="sec-t">أصناف</h3>' + fi.map(x => '<button type="button" class="sr" data-si="' + H(x.s.id) + '" data-c="' + H(x.f.c.id) + '" data-i="' + H(x.f.it.id) + '"><span class="ic">' + itemArt(x.s.id, x.f.it, x.f.c.name, x.s.cat) + '</span><div class="t"><b>' + H(x.f.it.name) + '</b><small>' + H(x.s.name) + (HWBiz.itemOn(x.f.it) ? '' : ' · غير متوفر الآن') + '</small></div><span class="p">' + money(x.f.it.price) + ' د.أ</span></button>').join('') : '') ||
         '<div class="empty-orders rich"><div class="em-art">' + IC.heart + '</div>لا توجد مفضلات بعد<br><small>اضغط على القلب في صفحة المتجر أو الصنف</small></div>';
 }
 function fillProfile() {
