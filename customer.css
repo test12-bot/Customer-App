@@ -317,9 +317,10 @@ button.dl-info{width:100%;border:0;background:none;font:inherit;color:inherit;te
 .late-card a{display:inline-flex;align-items:center;gap:6px;background:#0E3A3B;color:#F5EDE3;border-radius:99px;padding:8px 12px;font-weight:800;font-size:12.5px;text-decoration:none;white-space:nowrap}
 .late-card a svg{width:16px;height:16px}
 /* صورة الصنف في صفحته بنفس نسبة الرفع 4:3، فتظهر كاملة (والقائمة تعرض المربع الأوسط منها) */
-.is-art:has(.it-ph){height:auto !important;aspect-ratio:4/3}
+.is-art:has(.it-ph){width:100%;height:auto !important;aspect-ratio:3/4;max-height:58vh}   /* صور الأصناف 3:4 مثل منشورات إنستغرام */
 /* صورة الصنف في القائمة بنفس نسبة الرفع 4:3، فتظهر كاملة بلا قص */
-.mi .mi-art:has(.it-ph){width:116px;height:87px}
+.mi .mi-art:has(.it-ph){width:96px;height:128px}
+.fi .mi-art:has(.it-ph){height:auto;aspect-ratio:3/4}
 .sum .sg{color:var(--ink);font-weight:800}.sum .sg b{color:var(--ink)}
 /* طلب محفوظ على الجهاز بانتظار عودة الاتصال */
 .tk-send{display:flex;gap:10px;align-items:flex-start;background:#FFF3C4;border:1px solid var(--yellow,#E8EF44);border-radius:16px;padding:12px;margin:0 0 12px}
@@ -339,7 +340,6 @@ button.dl-info{width:100%;border:0;background:none;font:inherit;color:inherit;te
 .field.invalid .g-seg button{border-color:rgba(229,72,77,.6)}
 .modal .g-seg button{background:var(--white);color:var(--ink)}
 .modal .g-seg button[aria-checked="true"]{border-color:var(--ink);background:var(--white)}
-.pf-av{width:96px;height:96px;border-radius:50%;border:4px solid var(--white);background:#F3F0E7;display:block;margin:0 auto;object-fit:cover}
 .pf-name{display:flex;align-items:center;justify-content:center;gap:8px}
 .pf-pen{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:0;background:var(--white);color:var(--ink);cursor:pointer;flex:none;padding:0}
 .pf-pen svg{width:15px;height:15px}
