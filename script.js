@@ -214,7 +214,7 @@ function countAr(n, one, two, few, many) {             // صيغة العدد ا
     if (n === 0) return 'لا يوجد ' + one; if (n === 1) return one + ' واحد'; if (n === 2) return two;
     return n + ' ' + (n % 100 >= 3 && n % 100 <= 10 ? few : many);
 }
-function codeH(o) { return '<span class="code" dir="ltr">' + H(HWOrders.codeOf(o)) + '</span>'; }
+function codeH(o) { return '<span class="code" dir="ltr">' + H(HWOrders.shortNo(o)) + '</span>'; }
 function fmtWhen(ts) {
     const d = new Date(ts), t = HWOrders.fmtTime(ts), today = new Date();
     const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1);
@@ -917,7 +917,7 @@ function openRate(id) {
     const o = HWOrders.get(id); if (!o || o.rating) return;
     rateCtx = { id, store: 0, captain: 0 };
     const row = (k, t, sub) => '<div class="rt-row"><div><b>' + t + '</b><small>' + H(sub) + '</small></div><div class="rt-stars" data-k="' + k + '">' + [1, 2, 3, 4, 5].map(v => '<button type="button" data-v="' + v + '" aria-label="' + v + '">' + IC.star + '</button>').join('') + '</div></div>';
-    openSheet('<div class="sh-h"><b>قيّم طلبك ' + H(o.code) + '</b><button type="button" class="is-x" onclick="closeSheet()" aria-label="إغلاق">' + IC.x + '</button></div>' +
+    openSheet('<div class="sh-h"><b>قيّم طلبك ' + H(HWOrders.shortNo(o)) + '</b><button type="button" class="is-x" onclick="closeSheet()" aria-label="إغلاق">' + IC.x + '</button></div>' +
         '<div class="emo-quick"><small>ضغطة واحدة تكفي</small>' + emoRow(o.id) + '<small class="emo-or">أو قيّم بالتفصيل</small></div>' +
         row('store', 'المتجر', o.storeName) + (o.captain ? row('captain', 'الكابتن', o.captain.name) : '') +
         '<div class="field"><label for="rtC">ملاحظاتك <span class="opt">(اختياري)</span></label><textarea id="rtC" rows="2" placeholder="ما الذي أعجبك؟ ما الذي يمكن تحسينه؟"></textarea></div>' +
@@ -949,11 +949,11 @@ function renderOrders() {
     const badge = $('tabBadge'); badge.textContent = act.length; badge.classList.toggle('on', act.length > 0);
 }
 const NOTE = {
-    store_accepted: (o) => o.scheduledFor ? 'المتجر أكّد طلبك المجدول ' + o.code : 'المتجر بدأ بتحضير طلبك ' + o.code,
+    store_accepted: (o) => o.scheduledFor ? 'المتجر أكّد طلبك المجدول ' + HWOrders.shortNo(o) : 'المتجر بدأ بتحضير طلبك ' + HWOrders.shortNo(o),
     accepted: (o) => 'الكابتن ' + ((o.captain && o.captain.name) || '') + ' استلم طلبك وهو في الطريق للمتجر',
     picked: (o) => 'الكابتن استلم طلبك وهو في الطريق إليك',
-    delivered: (o) => 'تم تسليم طلبك ' + o.code + '، بالهناء والشفاء',
-    cancelled: (o) => (o.cancelReason || 'تم إلغاء طلبك') + ' ' + o.code
+    delivered: (o) => 'تم تسليم طلبك ' + HWOrders.shortNo(o) + '، بالهناء والشفاء',
+    cancelled: (o) => (o.cancelReason || 'تم إلغاء طلبك') + ' ' + HWOrders.shortNo(o)
 };
 function sigOf(o) { return o.status + '|' + o.storeState; }
 function onOrders(list) {
