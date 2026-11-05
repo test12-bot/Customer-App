@@ -153,7 +153,6 @@ const CFG = window.HW_CONFIG;
 let STORES = [];
 function liveStores() { return HWBiz.storeList().filter(s => { const st = storeState[s.id]; return st && st.lat != null; }); }
 const PROFILE_KEY = 'hwc-user', CART_KEY = 'hwc-cart', ANN_KEY = 'hwc-ann-seen';
-const SUPPORT_WA = '962791819432';
 const $ = (id) => document.getElementById(id);
 const H = HWOrders.esc, money = HWOrders.money;
 const ROOTS = ['screen-home', 'screen-search', 'screen-orders', 'screen-profile'];
@@ -215,7 +214,7 @@ function countAr(n, one, two, few, many) {             // صيغة العدد ا
     if (n === 0) return 'لا يوجد ' + one; if (n === 1) return one + ' واحد'; if (n === 2) return two;
     return n + ' ' + (n % 100 >= 3 && n % 100 <= 10 ? few : many);
 }
-function codeH(o) { return '<span class="code">' + H(o.code) + '</span>'; }
+function codeH(o) { return '<span class="code" dir="ltr">' + H(HWOrders.codeOf(o)) + '</span>'; }
 function fmtWhen(ts) {
     const d = new Date(ts), t = HWOrders.fmtTime(ts), today = new Date();
     const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1);
@@ -638,7 +637,7 @@ async function placeOrderNow() {
 function openBlocked() {
     openSheet('<div class="sh-h"><b>لا يمكن إتمام الطلب</b><button type="button" class="is-x" onclick="closeSheet()" aria-label="إغلاق">' + IC.x + '</button></div>' +
         '<p class="mut">تم إيقاف الطلب من هذا الرقم بسبب عدم استلام طلبات سابقة. تواصل مع الدعم لإعادة التفعيل.</p>' +
-        '<a class="submit-btn" style="margin-top:14px;text-decoration:none" href="https://wa.me/' + SUPPORT_WA + '" target="_blank" rel="noopener"><span class="btn-label">تواصل مع الدعم</span></a>');
+        '<button type="button" class="submit-btn" style="margin-top:14px" onclick="closeSheet();openSupport()"><span class="btn-label">تواصل مع الدعم</span></button>');
 }
 
 /* =========================================================
@@ -868,7 +867,7 @@ function renderTrack() {
     const o = HWOrders.get(trackId); if (!o || !trk || trk.id !== o.id) { buildTrack(); if (!trk) return; }
     const s = storeInfo(o.storeId), ic = stIcon(o), n = HWOrders.stage(o), act = HWOrders.isActive(o), live = act && !isWaitingSchedule(o);
     const labels = ['تأكيد', 'تحضير', 'كابتن', 'توصيل', 'تسليم'], canCancel = canCancelMine(o);
-    const cap = o.captain ? '<div class="cart-card"><div class="cap-row"><img class="av" src="' + H(HWBiz.capAv(o.captain)) + '" alt=""><div class="t"><b>' + H(o.captain.name) + '</b><small>' + (o.status === 'picked' ? 'استلم طلبك وفي الطريق إليك' : o.status === 'delivered' ? 'سلّمك الطلب' : 'في الطريق للمتجر') + '</small></div>' + (act && o.captain.phone ? '<a href="tel:' + H(o.captain.phone) + '" aria-label="اتصال بالكابتن">' + IC.phone + '</a>' : '') + '</div></div>' : '';
+    const cap = o.captain ? '<div class="cart-card"><div class="cap-row"><img class="av" src="' + H(HWBiz.capAv(o.captain)) + '" alt=""><div class="t"><b>' + H(o.captain.name) + (o.captain.num ? ' <span class="cap-no" dir="ltr">' + H(o.captain.num) + '</span>' : '') + '</b><small>' + (o.status === 'picked' ? 'استلم طلبك وفي الطريق إليك' : o.status === 'delivered' ? 'سلّمك الطلب' : 'في الطريق للمتجر') + '</small></div>' + (act && o.captain.phone ? '<a href="tel:' + H(o.captain.phone) + '" aria-label="اتصال بالكابتن">' + IC.phone + '</a>' : '') + '</div></div>' : '';
     const pin = act && o.pin && o.storeState !== 'pending' ? '<div class="pin-card"><div><b>رمز التسليم</b><small>أعطِ الرمز للكابتن عند استلام طلبك</small></div><span class="pin" dir="ltr">' + H(o.pin) + '</span></div>' : '';
     $('tkSheet').innerHTML =
         '<div class="tk-grab"></div><div class="tk-head"><span class="tk-ic ' + ic[0] + '">' + ic[1] + '</span><div class="tk-ht"><small>' + codeH(o) + ' · ' + H(o.storeName) + '</small>' + (live ? '<div class="tk-eta"><b>' + etaMinLeft(o) + '–' + (etaMinLeft(o) + (liveEtaMin(o) != null ? 3 : 8)) + '</b><span>دقيقة</span><em class="tk-clk">' + (liveEtaMin(o) != null ? '<i class="lv"></i>' : '') + 'الوصول المتوقع ' + H(HWOrders.fmtTime(Date.now() + (etaMinLeft(o) + (liveEtaMin(o) != null ? 1 : 4)) * 60000)) + '</em></div>' : '') + '<h1>' + bigStatus(o) + '</h1>' + (live ? '' : '<p>' + etaText(o) + '</p>') + '</div></div>' + trackArt() +
@@ -910,11 +909,8 @@ function cancelMine(id) {
     const o = HWOrders.get(id);
     if (o && canCancelMine(o) && confirm(o.storeState === 'pending' ? 'إلغاء هذا الطلب؟' : 'إلغاء هذا الطلب؟ سيُبلَّغ المتجر والكابتن فورًا.')) { HWOrders.update(id, { status: 'cancelled', cancelReason: 'ألغيتَ الطلب' }); buzz(15); renderTrack(); }
 }
-function openSupport(id) {
-    const o = id ? HWOrders.get(id) : null;
-    const msg = 'مرحبًا HIGHWAY، أنا ' + me.name + ' (' + me.phone + ')' + (o ? '\nبخصوص الطلب ' + o.code + ' من ' + o.storeName + ' — الحالة: ' + HWOrders.label(o) : '') + '\n';
-    window.open('https://wa.me/' + SUPPORT_WA + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
-}
+/* الدعم داخل التطبيق؛ من صفحة الطلب يُرفق رقمه تلقائيًا */
+function openSupport(id) { const o = id ? HWOrders.get(id) : null; HWSupport.open(o ? { order: o.code } : null); }
 
 /* ---------- التقييم بعد التسليم ---------- */
 function openRate(id) {
@@ -966,7 +962,7 @@ function onOrders(list) {
     if (prevSig) m.forEach(o => {
         const was = prevSig[o.id]; if (!was || was === sigOf(o)) return;
         const key = o.status !== was.split('|')[0] ? o.status : (o.storeState === 'preparing' ? 'store_accepted' : '');
-        if (NOTE[key]) { HWOrders.toast(NOTE[key](o)); HWNotify.play(key === 'cancelled' ? 'alert' : 'status'); HWNotify.notify('HIGHWAY', NOTE[key](o)); buzz(24); delete dismissed[o.id]; }
+        if (NOTE[key]) { HWOrders.toast(NOTE[key](o)); HWNotify.play(key === 'cancelled' ? 'alert' : 'status'); HWNotify.notify('HIGHWAY', NOTE[key](o), o.id); buzz(24); delete dismissed[o.id]; }
         if (key === 'delivered' && !o.rating) setTimeout(() => openRate(o.id), 1500);
     });
     prevSig = {}; m.forEach(o => { prevSig[o.id] = sigOf(o); });
@@ -1002,6 +998,7 @@ function renderFavs() {
 }
 function fillProfile() {
     $('pfName').textContent = me.name; $('pfPhone').textContent = me.phone; $('pfAv').src = avatarOf(me.gender);
+    HWHead.user({ img: avatarOf(me.gender), name: me.name, role: 'عميل HIGHWAY' });
     $('pfArea').textContent = addrs().length ? countAr(addrs().length, 'عنوان', 'عنوانان', 'عناوين', 'عنوانًا') : 'غير محدد';
     const nf = ((me.favs && me.favs.s) || []).length + ((me.favs && me.favs.i) || []).length;
     $('pfFavs').textContent = nf ? nf : '';
@@ -1059,8 +1056,14 @@ function applyUser(u) {
     if (me && me.phone) HWOrders.scope([{ by: 'customer/phone', eq: me.phone }]);   /* يقرأ طلباته فقط */
     document.body.classList.toggle('authed', !!u);
     $('appShell').inert = !u;
-    if (u) fillProfile();
+    if (u) { fillProfile(); HWSupport.rescope(); } else HWHead.user(null);
 }
+HWHead.init({
+    app: 'customer', logout: () => logout(),
+    items: [{ k: 'profile', t: 'الملف الشخصي', fn: () => tabGo('screen-profile') }, { k: 'support', t: 'الدعم', fn: () => openSupport() }],
+    go: (k) => { if (/^support/.test(k)) HWSupport.open(); else if (HWOrders.get(k)) openTrack(k); else tabGo('screen-orders'); }
+});
+HWSupport.init({ role: 'c', me: () => me ? { uid: me.phone, name: me.name, phone: me.phone, img: avatarOf(me.gender) } : null });
 /* صورة العميل: شخصيتا HIGHWAY (كريم للذكر، لين للأنثى) */
 function avatarOf(g) { return 'art/av-' + (g === 'f' ? 'f' : 'm') + '.png'; }
 let loginG = '';
