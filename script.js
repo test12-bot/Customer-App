@@ -463,8 +463,10 @@ function updateCartUI() {
     $('cartBar').classList.toggle('show', showBar);
     document.body.classList.toggle('has-cart', showBar);
     $('cbN').textContent = n; $('cbT').textContent = money(cartTotal()) + ' د.أ';
-    $('hdrCart').style.display = n > 0 && !onCart ? '' : 'none'; $('hdrCartN').textContent = n;
+    $('hdrCart').style.display = n > 0 && !onCart && !showBar ? '' : 'none'; $('hdrCartN').textContent = n;
+    tightHdr();
 }
+function tightHdr() { const h = document.querySelector('.app-header'); if (h) h.classList.toggle('hdr-tight', $('headerBack').classList.contains('show') || $('hdrCart').style.display !== 'none'); }
 function openCart() {
     renderCart(); goTo('screen-cart');
     const s = storeInfo(cart.storeId);
@@ -1027,6 +1029,7 @@ function syncTabs(id) {
     });
 }
 function showScreen(id) {
+    const ish = $('itemSheet'); if (ish && ish.classList.contains('show')) closeItemSheet();
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     $(id).classList.add('active'); currentScreen = id;
     $('headerBack').classList.toggle('show', ROOTS.indexOf(id) < 0);
