@@ -56,7 +56,7 @@ function initIntroVideo() {
         'void main(){ uv = vec2(p.x*0.5+0.5, 0.5-p.y*0.5); gl_Position = vec4(p,0.0,1.0); }');
     const fs = compile(gl.FRAGMENT_SHADER,
         'precision mediump float; uniform sampler2D tex; varying vec2 uv;' +
-        'const vec3 BG = vec3(33.0,204.0,208.0)/255.0;' +            // لون خلفية الفيديو
+        'const vec3 BG = vec3(37.0,205.0,208.0)/255.0;' +            // لون خلفية الفيديو
         'void main(){' +
         '  vec3 c = texture2D(tex, uv).rgb;' +
         '  float a = clamp((distance(c, BG) - 0.035) / 0.80, 0.0, 1.0);' +
@@ -199,7 +199,7 @@ function blankCart(keep) { return { storeId: '', items: [], notes: '', promo: ''
 function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms || 8); } catch (e) {} }
 function sortKey(name) { return String(name).replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').trim(); }
 function storeInfo(id) { return STORES.filter(s => s.id === id)[0]; }
-function logoImg(id, cls) { return '<img class="' + (cls || 'lg') + '" src="' + H(HWBiz.logo(id)) + '" alt="" onerror="this.src=\'logo-icon.png\'">'; }
+function logoImg(id, cls) { return '<img class="' + (cls || 'lg') + '" src="' + H(HWBiz.logo(id)) + '" alt="" onerror="this.src=\'logo-icon.png?v=2\'">'; }
 function readJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } }
 function saveMe() { try { localStorage.setItem(PROFILE_KEY, JSON.stringify(me)); } catch (e) {} }
 function saveCart() { if (cart.items.length) cart.at = Date.now(); try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {} }
@@ -835,7 +835,7 @@ function mountTrackArt(o) {
 }
 /* وجوه التقييم بهوية هاي وي: حقيبة "بوكسي" صغيرة بخمسة تعابير وألوان الشركة */
 function FACE(v) {
-    const col = { 1: '#F5EDE3', 2: '#F5EDE3', 3: '#A8E9EA', 4: '#26CED0', 5: '#E8EF44' }[v];
+    const col = { 1: '#F3F0E7', 2: '#F3F0E7', 3: '#A8E9EA', 4: '#26CED0', 5: '#E8EF44' }[v];
     const eyes = v === 5 ? '<path d="M16.5 27.5q2.5-3 5 0M26.5 27.5q2.5-3 5 0"/>' : '<circle cx="19" cy="27" r="1.9" fill="#0E3A3B" stroke="none"/><circle cx="29" cy="27" r="1.9" fill="#0E3A3B" stroke="none"/>';
     const mouth = { 1: '<path d="M18.5 36q5.5-5 11 0"/><path d="M15.5 22.5l4.5 1.6M32.5 22.5l-4.5 1.6"/>', 2: '<path d="M19.5 35q4.5-2.6 9 0"/>', 3: '<path d="M19.5 33.5h9"/>', 4: '<path d="M18.5 32q5.5 4.5 11 0"/>', 5: '<path d="M17.5 31.5h13q-1 7-6.5 7t-6.5-7z" fill="#0E3A3B"/><circle cx="14.5" cy="32" r="2.2" fill="#F6A6A0" stroke="none"/><circle cx="33.5" cy="32" r="2.2" fill="#F6A6A0" stroke="none"/>' }[v];
     return '<svg viewBox="0 0 48 48" fill="none" stroke="#0E3A3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v-2.5a6 6 0 0 1 12 0V13"/><rect x="7" y="13" width="34" height="30" rx="8" fill="' + col + '"/><path d="M7 20.5h34" stroke-width="2"/>' + eyes + mouth + '</svg>';
@@ -873,7 +873,7 @@ function renderTrack() {
     const pin = act && o.pin && o.storeState !== 'pending' ? '<div class="pin-card"><div><b>رمز التسليم</b><small>أعطِ الرمز للكابتن عند استلام طلبك</small></div><span class="pin" dir="ltr">' + H(o.pin) + '</span></div>' : '';
     $('tkSheet').innerHTML =
         '<div class="tk-grab"></div><div class="tk-head"><span class="tk-ic ' + ic[0] + '">' + ic[1] + '</span><div class="tk-ht"><small>' + codeH(o) + ' · ' + H(o.storeName) + '</small>' + (live ? '<div class="tk-eta"><b>' + etaMinLeft(o) + '–' + (etaMinLeft(o) + (liveEtaMin(o) != null ? 3 : 8)) + '</b><span>دقيقة</span><em class="tk-clk">' + (liveEtaMin(o) != null ? '<i class="lv"></i>' : '') + 'الوصول المتوقع ' + H(HWOrders.fmtTime(Date.now() + (etaMinLeft(o) + (liveEtaMin(o) != null ? 1 : 4)) * 60000)) + '</em></div>' : '') + '<h1>' + bigStatus(o) + '</h1>' + (live ? '' : '<p>' + etaText(o) + '</p>') + '</div></div>' + trackArt() +
-        (o.status === 'cancelled' ? '' : '<div class="tk-road" style="--p:' + Math.round(Math.min(n + .5, labels.length - 1) / (labels.length - 1) * 100) + '%"><div class="oc-prog hw-road" style="--p:inherit"><b class="rd-f"></b><em class="rd-c"></em></div></div><div class="tk-lbls">' + labels.map(l => '<span>' + l + '</span>').join('') + '</div>') +
+        (o.status === 'cancelled' ? '' : '<div class="tk-road" style="--p:' + Math.round(Math.min(n + .5, labels.length - 1) / (labels.length - 1) * 100) + '%"><div class="oc-prog hw-road' + (o.captain ? ' has-r' : '') + '" style="--p:inherit"><b class="rd-f"></b>' + (o.captain ? HWOrders.riderImg(o) : '<em class="rd-c"></em>') + '</div></div><div class="tk-lbls">' + labels.map(l => '<span>' + l + '</span>').join('') + '</div>') +
         sendingCard(o) + lateCard(o, s) + pin + rateCard(o) + cap +
         '<h3 class="sec-t">طلبك</h3><div class="cart-card">' + o.items.map(l => '<div class="cl ro"><div class="cl-txt"><b>' + l.qty + '× ' + H(lineName(l)) + '</b>' + (l.opts && l.opts.length ? '<small class="cl-opts">' + H(optsText(l.opts)) + '</small>' : '') + (l.notes ? '<small>' + H(l.notes) + '</small>' : '') + '</div><span>' + money(l.price * l.qty) + '</span></div>').join('') + '</div>' +
         '<div class="cart-card sum"><div><span>المجموع الفرعي</span><b>' + money(o.itemsGross || o.itemsTotal) + ' د.أ</b></div>' + (o.discount ? '<div class="dsc"><span>' + H(o.offerTitle || 'خصم') + '</span><b>−' + money(o.discount) + ' د.أ</b></div>' : '') + (o.promoAmount ? '<div class="dsc"><span>كود ' + H(o.promoCode) + '</span><b>−' + money(o.promoAmount) + ' د.أ</b></div>' : '') + '<div><span>رسوم التوصيل' + (o.distKm ? ' · ' + o.distKm + ' كم' : '') + '</span><b>' + money(o.fee) + ' د.أ</b></div>' + (o.surge ? '<div class="sg"><span>رسوم ' + H(o.surgeLabel || 'إضافية') + '</span><b>' + money(o.surge) + ' د.أ</b></div>' : '') + '<div class="tot"><span>الإجمالي (نقدًا عند الاستلام)</span><b>' + money(o.total) + ' د.أ</b></div></div>' +
@@ -984,6 +984,9 @@ function renderLive() {
     $('lvSub').textContent = o.storeName + ' · ' + etaText(o);
     const n = HWOrders.stage(o), st = HWOrders.steps(o);
     $('lvTrack').innerHTML = st.map((s, i) => '<span class="' + (i < n ? 'done' : i === n ? 'act' : '') + '"><i></i>' + s[1].replace('تم ', '').replace('الكابتن ', '') + '</span>').join('');
+    /* بعد تعيين الكابتن: نفس طريقه ودراجته الماشية كما في صفحة تتبع الطلب */
+    let rd = $('lvRoad'); if (!rd) { rd = document.createElement('div'); rd.id = 'lvRoad'; rd.className = 'lv-road'; $('lvTrack').before(rd); }
+    rd.innerHTML = o.captain ? HWOrders.progress_(o) : '';
 }
 function hideLive(e) { if (e) e.stopPropagation(); const id = $('liveBar').dataset.id, o = HWOrders.get(id); if (o) dismissed[id] = sigOf(o); renderLive(); }
 function liveOpen(e) { if (e.target.closest('.lv-x')) return; openTrack($('liveBar').dataset.id); }
