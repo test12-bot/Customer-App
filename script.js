@@ -835,7 +835,7 @@ function mountTrackArt(o) {
 }
 /* وجوه التقييم بهوية هاي وي: حقيبة "بوكسي" صغيرة بخمسة تعابير وألوان الشركة */
 function FACE(v) {
-    const col = { 1: '#F5EDE3', 2: '#F5EDE3', 3: '#A8E9EA', 4: '#25CED1', 5: '#E8EF44' }[v];
+    const col = { 1: '#F5EDE3', 2: '#F5EDE3', 3: '#A8E9EA', 4: '#26CED0', 5: '#E8EF44' }[v];
     const eyes = v === 5 ? '<path d="M16.5 27.5q2.5-3 5 0M26.5 27.5q2.5-3 5 0"/>' : '<circle cx="19" cy="27" r="1.9" fill="#0E3A3B" stroke="none"/><circle cx="29" cy="27" r="1.9" fill="#0E3A3B" stroke="none"/>';
     const mouth = { 1: '<path d="M18.5 36q5.5-5 11 0"/><path d="M15.5 22.5l4.5 1.6M32.5 22.5l-4.5 1.6"/>', 2: '<path d="M19.5 35q4.5-2.6 9 0"/>', 3: '<path d="M19.5 33.5h9"/>', 4: '<path d="M18.5 32q5.5 4.5 11 0"/>', 5: '<path d="M17.5 31.5h13q-1 7-6.5 7t-6.5-7z" fill="#0E3A3B"/><circle cx="14.5" cy="32" r="2.2" fill="#F6A6A0" stroke="none"/><circle cx="33.5" cy="32" r="2.2" fill="#F6A6A0" stroke="none"/>' }[v];
     return '<svg viewBox="0 0 48 48" fill="none" stroke="#0E3A3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v-2.5a6 6 0 0 1 12 0V13"/><rect x="7" y="13" width="34" height="30" rx="8" fill="' + col + '"/><path d="M7 20.5h34" stroke-width="2"/>' + eyes + mouth + '</svg>';

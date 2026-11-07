@@ -65,7 +65,7 @@
 .vc-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft);font-weight:700}
 .vc-meta svg{width:14px;height:14px;color:var(--teal)}
 .vc-meta .dot{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.5}
-.vc-meta .hl{background:rgba(37,206,209,.15);color:var(--teal-800);border-radius:999px;padding:2px 9px}
+.vc-meta .hl{background:rgba(38,206,208,.15);color:var(--teal-800);border-radius:999px;padding:2px 9px}
 
 /* صفحة المتجر */
 .v-hero{position:relative;height:150px;border-radius:28px;overflow:hidden;display:grid;place-items:center;background:var(--food-bg)}
@@ -125,9 +125,9 @@
 .tk-eta b{font-size:32px;font-family:var(--font-display);line-height:1;color:var(--teal-900)}.tk-eta span{font-weight:800;color:var(--ink-soft)}
 
 /* أزرار الترتيب: حد فيروزي خفيف ليظهر الأبيض على الكريمي */
-.srt{background:#fff;border:1.5px solid rgba(37,206,209,.45);color:var(--teal-900)}
+.srt{background:#fff;border:1.5px solid rgba(38,206,208,.45);color:var(--teal-900)}
 .srt.on{border-color:var(--teal)}
-.ctab{background:#fff;border:1.5px solid rgba(37,206,209,.35)}
+.ctab{background:#fff;border:1.5px solid rgba(38,206,208,.35)}
 .ctab.on{border-color:var(--teal)}
 .sec-h small{color:var(--ink-soft);font-weight:700;font-size:12.5px}
 
@@ -211,7 +211,7 @@ button.dl-info{width:100%;border:0;background:none;font:inherit;color:inherit;te
 .wh{display:flex;align-items:center;gap:10px;border:2px solid transparent;background:#fff;border-radius:16px;padding:11px;font:inherit;color:var(--ink);text-align:start;cursor:pointer}
 .wh svg{flex:none;width:22px;height:22px;color:var(--teal-800)}
 .wh b{display:block;font-size:14px}.wh small{display:block;font-size:11.5px;color:var(--ink-soft);font-weight:700}
-.wh.on{border-color:var(--teal-800);background:rgba(37,206,209,.12)}
+.wh.on{border-color:var(--teal-800);background:rgba(38,206,208,.12)}
 .wh:disabled{opacity:.45;cursor:not-allowed}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .slot{border:0;background:var(--cream);border-radius:12px;padding:10px 4px;font:inherit;font-weight:800;font-size:13px;color:var(--ink);cursor:pointer}
@@ -234,7 +234,7 @@ button.dl-info{width:100%;border:0;background:none;font:inherit;color:inherit;te
 .ad-a{flex:none;width:34px;height:34px;border:0;border-radius:11px;background:#fff;color:var(--ink-soft);display:grid;place-items:center;cursor:pointer}.ad-a svg{width:16px;height:16px}
 .loc-tags{display:flex;gap:8px;margin:0 0 10px}
 .lt{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:2px solid transparent;background:var(--cream);border-radius:14px;padding:9px 6px;font:inherit;font-weight:800;font-size:13px;color:var(--ink);cursor:pointer}
-.lt svg{width:17px;height:17px}.lt.on{border-color:var(--teal-800);background:rgba(37,206,209,.14)}
+.lt svg{width:17px;height:17px}.lt.on{border-color:var(--teal-800);background:rgba(38,206,208,.14)}
 .loc-panel .field{margin:0 0 10px}
 .loc-panel .field input{width:100%;border:0;background:var(--cream);border-radius:14px;padding:12px 14px;font:inherit;color:var(--ink)}
 /* التتبع: رمز التسليم، التقييم، الإجراءات */
@@ -286,7 +286,7 @@ button.dl-info{width:100%;border:0;background:none;font:inherit;color:inherit;te
 .emo-row button{flex:1;font-size:28px;line-height:1;padding:10px 0;border-radius:16px;background:rgba(255,255,255,.75);border:1.5px solid rgba(14,58,59,.08);transition:transform .15s ease,background .2s}
 .emo-row button:active{transform:scale(1.25)}
 /* تذكير السلة */
-.cart-nudge{position:fixed;inset-inline:12px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:2500;display:flex;align-items:center;gap:10px;max-width:520px;margin:0 auto;padding:8px 12px 8px 8px;border-radius:20px;background:#fff;color:#0E3A3B;box-shadow:0 12px 30px rgba(14,58,59,.2);border:2px solid #25CED1;text-align:start;transform:translateY(160%);opacity:0;transition:transform .45s cubic-bezier(.22,.8,.24,1),opacity .3s}
+.cart-nudge{position:fixed;inset-inline:12px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:2500;display:flex;align-items:center;gap:10px;max-width:520px;margin:0 auto;padding:8px 12px 8px 8px;border-radius:20px;background:#fff;color:#0E3A3B;box-shadow:0 12px 30px rgba(14,58,59,.2);border:2px solid #26CED0;text-align:start;transform:translateY(160%);opacity:0;transition:transform .45s cubic-bezier(.22,.8,.24,1),opacity .3s}
 .cart-nudge.show{transform:none;opacity:1}.cart-nudge img{height:54px;width:auto}.cart-nudge span{flex:1}.cart-nudge b{display:block;font-size:14.5px}.cart-nudge small{font-size:12px;opacity:.7}
 .cart-nudge em{font-style:normal;font-weight:800;font-size:13px;background:#E8EF44;border-radius:99px;padding:7px 12px;white-space:nowrap}
 [data-theme=dark] .cart-nudge{background:#16302F;color:#F5EDE3}
@@ -296,8 +296,8 @@ button.dl-info{width:100%;border:0;background:none;font:inherit;color:inherit;te
 /* وقت الوصول المتوقع بالساعة */
 .tk-eta{flex-wrap:wrap}
 .tk-clk{flex-basis:100%;font-style:normal;font-size:12.5px;font-weight:800;color:var(--teal-900);display:inline-flex;align-items:center;gap:6px;margin-top:2px}
-.tk-clk .lv{width:8px;height:8px;border-radius:50%;background:#25CED1;box-shadow:0 0 0 0 rgba(37,206,209,.6);animation:tkLv 1.6s infinite}
-@keyframes tkLv{70%{box-shadow:0 0 0 7px rgba(37,206,209,0)}100%{box-shadow:0 0 0 0 rgba(37,206,209,0)}}
+.tk-clk .lv{width:8px;height:8px;border-radius:50%;background:#26CED0;box-shadow:0 0 0 0 rgba(38,206,208,.6);animation:tkLv 1.6s infinite}
+@keyframes tkLv{70%{box-shadow:0 0 0 7px rgba(38,206,208,0)}100%{box-shadow:0 0 0 0 rgba(38,206,208,0)}}
 .cx-left{font-weight:800;opacity:.75;margin-inline-start:6px;direction:ltr;unicode-bidi:isolate}
 /* وجوه التقييم (بوكسي) والنجوم بهوية هاي وي */
 .emo-row button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:0;padding:9px 0 7px;background:#fff;border:1.5px solid rgba(14,58,59,.1);color:#0E3A3B;cursor:pointer;font-family:inherit}
