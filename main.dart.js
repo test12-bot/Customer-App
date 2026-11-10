@@ -35391,7 +35391,7 @@ $S:2}
 A.aVo.prototype={
 $1(a){var s=A.dM().b
 s=s==null?null:s.canvasKitBaseUrl
-return(s==null?"https://www.gstatic.com/flutter-canvaskit/89c39edfdfae2949f6806e4a315c0c08522238b7/":s)+a},
+return(s==null?"canvaskit/":s)+a},
 $S:35}
 A.Wr.prototype={
 gq(a){var s=this.a
